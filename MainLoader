@@ -15,6 +15,9 @@ local SupportedGames = {
     [920587237]  = "https://raw.githubusercontent.com/ValorHub0/Free/refs/heads/main/AdoptmeGingerbreadFarm.lua",
     [383310974]  = "https://raw.githubusercontent.com/ValorHub0/Free/refs/heads/main/AdoptmeGingerbreadFarm.lua",
     [3647333358]  = "https://raw.githubusercontent.com/ValorHub0/Free/refs/heads/main/EvadeGingerbreadfarm.lua",
+    [111958650]  = "https://raw.githubusercontent.com/ValorHub0/Free/refs/heads/main/Arsenal.lua"
+    [66654135]  = "https://raw.githubusercontent.com/ValorHub0/Free/refs/heads/main/mm2.lua"
+
 }
 
 local function SafeLoad(url, name)
