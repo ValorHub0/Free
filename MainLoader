@@ -1,10 +1,11 @@
+-- Prevent double execution
 if getgenv().MainLoaderExecuted then
     print("[ValorHub] Already executed")
     return
 end
 getgenv().MainLoaderExecuted = true
 
-task.wait()
+-- Wait until game is fully loaded
 repeat task.wait() until game:IsLoaded()
 
 local Players = game:GetService("Players")
@@ -14,16 +15,31 @@ local player = Players.LocalPlayer
 local SupportedGames = {
     [920587237]  = "https://raw.githubusercontent.com/ValorHub0/Free/refs/heads/main/AdoptmeEVENTS.lua",
     [383310974]  = "https://raw.githubusercontent.com/ValorHub0/Free/refs/heads/main/AdoptmeEVENTS.lua",
-    [3647333358]  = "https://raw.githubusercontent.com/ValorHub0/Free/refs/heads/main/EvadeGingerbreadfarm.lua",
-    [111958650]  = "https://raw.githubusercontent.com/ValorHub0/Free/refs/heads/main/Arsenal.lua",
+    [3647333358] = "https://raw.githubusercontent.com/ValorHub0/Free/refs/heads/main/EvadeGingerbreadfarm.lua",
+    [111958650] = "https://raw.githubusercontent.com/ValorHub0/Free/refs/heads/main/Arsenal.lua",
     [66654135]  = "https://raw.githubusercontent.com/ValorHub0/Free/refs/heads/main/mm2.lua"
-
 }
 
+-- Universal HTTP request
+local HttpGet
+if is_synapse_function then -- Synapse
+    HttpGet = syn and syn.request or nil
+elseif is_fluxus_function then -- Fluxus
+    HttpGet = fluxus and fluxus.request or nil
+elseif is_delta_function then -- Delta
+    HttpGet = Delta and Delta.HttpGet or game.HttpGet
+else
+    HttpGet = game.HttpGet -- fallback
+end
+
+-- Universal loadstring
+local UniversalLoad = loadstring or load -- use 'load' if 'loadstring' is nil
+
+-- Safe loader
 local function SafeLoad(url, name)
     local data
     local ok, err = pcall(function()
-        data = game:HttpGet(url)
+        data = HttpGet(url) -- universal call
     end)
 
     if not ok or not data or data == "" then
@@ -31,13 +47,14 @@ local function SafeLoad(url, name)
         return
     end
 
-    local runOK, runErr = pcall(loadstring(data))
+    local runOK, runErr = pcall(UniversalLoad(data))
     if not runOK then
         print("[ERROR] " .. name .. " Error: " .. tostring(runErr))
         return
     end
 end
 
+-- Load script for current game
 local scriptURL = SupportedGames[game.PlaceId] or SupportedGames[game.GameId]
 if not scriptURL then
     print("[ERROR] This game is not supported by ValorHub")
