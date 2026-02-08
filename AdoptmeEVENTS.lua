@@ -1,6 +1,3 @@
-do
-
-
 -- ScreenGui
 local ScreenGui = Instance.new("ScreenGui")
 ScreenGui.ScreenInsets = 1 -- DeviceSafeInsets
