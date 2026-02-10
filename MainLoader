@@ -5,59 +5,53 @@ if getgenv().MainLoaderExecuted then
 end
 getgenv().MainLoaderExecuted = true
 
--- Wait until game is fully loaded
 repeat task.wait() until game:IsLoaded()
-
-local Players = game:GetService("Players")
-local player = Players.LocalPlayer
 
 -- Supported Games
 local SupportedGames = {
-    [920587237]  = "https://raw.githubusercontent.com/ValorHub0/Free/refs/heads/main/AdoptmeEVENTS.lua",
-    [383310974]  = "https://raw.githubusercontent.com/ValorHub0/Free/refs/heads/main/AdoptmeEVENTS.lua",
-    [3647333358] = "https://raw.githubusercontent.com/ValorHub0/Free/refs/heads/main/EvadeGingerbreadfarm.lua",
-    [111958650] = "https://raw.githubusercontent.com/ValorHub0/Free/refs/heads/main/Arsenal.lua",
-    [66654135]  = "https://raw.githubusercontent.com/ValorHub0/Free/refs/heads/main/mm2.lua"
+    [920587237]  = "https://raw.githubusercontent.com/ValorHub0/Free/main/AdoptmeEVENTS.lua",
+    [383310974]  = "https://raw.githubusercontent.com/ValorHub0/Free/main/AdoptmeEVENTS.lua",
+    [3647333358] = "https://raw.githubusercontent.com/ValorHub0/Free/main/EvadeGingerbreadfarm.lua",
+    [111958650]  = "https://raw.githubusercontent.com/ValorHub0/Free/main/Arsenal.lua",
+    [66654135]   = "https://raw.githubusercontent.com/ValorHub0/Free/main/mm2.lua"
 }
 
--- Universal HTTP request
-local HttpGet
-if is_synapse_function then -- Synapse
-    HttpGet = syn and syn.request or nil
-elseif is_fluxus_function then -- Fluxus
-    HttpGet = fluxus and fluxus.request or nil
-elseif is_delta_function then -- Delta
-    HttpGet = Delta and Delta.HttpGet or game.HttpGet
-else
-    HttpGet = game.HttpGet -- fallback
+-- UNIVERSAL HTTP GET (works on Delta, Fluxus, Synapse, etc)
+local function HttpGet(url)
+    if game.HttpGet then
+        return game:HttpGet(url)
+    elseif syn and syn.request then
+        return syn.request({Url = url, Method = "GET"}).Body
+    elseif http and http.request then
+        return http.request({Url = url, Method = "GET"}).Body
+    end
 end
-
--- Universal loadstring
-local UniversalLoad = loadstring or load -- use 'load' if 'loadstring' is nil
 
 -- Safe loader
 local function SafeLoad(url, name)
-    local data
-    local ok, err = pcall(function()
-        data = HttpGet(url) -- universal call
+    local ok, data = pcall(function()
+        return HttpGet(url)
     end)
 
     if not ok or not data or data == "" then
-        print("[ERROR] " .. name .. " failed to load. Network Error or Invalid Script.")
+        warn("[ValorHub] Failed loading "..name)
         return
     end
 
-    local runOK, runErr = pcall(UniversalLoad(data))
-    if not runOK then
-        print("[ERROR] " .. name .. " Error: " .. tostring(runErr))
+    local func = loadstring(data)
+    if not func then
+        warn("[ValorHub] Compile error in "..name)
         return
     end
+
+    func()
 end
 
--- Load script for current game
+-- Load correct script
 local scriptURL = SupportedGames[game.PlaceId] or SupportedGames[game.GameId]
+
 if not scriptURL then
-    print("[ERROR] This game is not supported by ValorHub")
+    warn("[ValorHub] Game not supported")
     return
 end
 
