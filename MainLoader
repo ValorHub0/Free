@@ -6,7 +6,8 @@ local SupportedGames = {
     [383310974]  = "https://raw.githubusercontent.com/ValorHub0/Free/main/AdoptmeEVENTS.lua",
     [3647333358] = "https://raw.githubusercontent.com/ValorHub0/Free/main/EvadeGingerbreadfarm.lua",
     [111958650]  = "https://raw.githubusercontent.com/ValorHub0/Free/main/Arsenal.lua",
-    [66654135]   = "https://raw.githubusercontent.com/ValorHub0/Free/main/mm2.lua"
+    [66654135]   = "https://raw.githubusercontent.com/ValorHub0/Free/main/mm2.lua",
+    [8144728961] = "https://raw.githubusercontent.com/ValorHub0/Free/refs/heads/main/Abyss.lua"
 }
 
 -- UNIVERSAL HTTP GET (works on Delta, Fluxus, Synapse, etc)
