@@ -1,3 +1,4 @@
+
 VL_Key   = VL_Key or ""
 VL_Name  = "trafalgar"
 VL_Title = VL_Title or "Valorhub KeySystem"
